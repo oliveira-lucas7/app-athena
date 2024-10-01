@@ -53,7 +53,6 @@ export default function CadastroUsuario() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Image source={require("../../assets/LogoAPP.png")} style={styles.img} />
       <Text style={styles.title}>Cadastre-se</Text>
       <View style={styles.section}>
         <View style={styles.inputView}>

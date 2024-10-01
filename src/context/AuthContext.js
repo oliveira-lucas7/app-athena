@@ -14,7 +14,7 @@ function AuthProvider({ children }) {
   const [showCadastro, setShowCadastro] = useState(false); 
   
   async function RealizaCadastro(email, username, password, phone) {
-    await fetch("http://10.139.75.37:5251/api/Usuario/CreateUser", {
+    await fetch("http://192.168.56.1:8080/user/create", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -42,23 +42,25 @@ function AuthProvider({ children }) {
   }
 
   async function Login(email, senha) {
-    await fetch("http://10.139.75.37:5251/api/Usuario/Login", {
+
+    console.log(email, senha)
+    await fetch("http://192.168.56.1:8080/user/login", {
       method: "POST",
       headers: {
         "content-type": "application/json",
       },
       body: JSON.stringify({
-        UsuarioEmail: email,
-        UsuarioSenha: senha,
+        email: email,
+        password: senha,
       }),
     })
       .then((res) => res.json())
       .then(async (json) => {
-        if (json.success) {
+        if (json.token) {
           try {
             await AsyncStorage.setItem(
               "userId",
-              json.user.usuarioId.toString()
+              json.token.toString()
             );
           } catch (err) {
             setError(true);
@@ -74,7 +76,9 @@ function AuthProvider({ children }) {
           setError(true);
         }
       })
-      .catch((err) => setError(true));
+      .catch((err) => {setError(true)
+        console.log(err)
+      });
   }
 
   async function getUserDetails(){

@@ -8,14 +8,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Tab = createBottomTabNavigator();
 
-import CadastroObjeto from "../pages/CadastroObjeto";
 import Home from "../pages/Home";
 import AuthScreen from "../pages/AuthScreen";
-import Busca from "../pages/Busca";
-import User from "../pages/User";
 
 export default function Rotas() {
-  const { logado, cadastro, realizouLogout } = useContext(AuthContext);
+  const { logado, realizouLogout } = useContext(AuthContext);
   const [usuarioSalvoNoAsyncS, setUsuarioSalvoNoAsyncS] = useState(false);
 
   const verificarUsuarioAsyncStorage = async () => {
@@ -65,7 +62,7 @@ export default function Rotas() {
               ),
             }}
           />
-          <Tab.Screen
+          {/* <Tab.Screen
             name="Cadastrar objeto desaparecido"
             component={CadastroObjeto}
             options={{
@@ -98,7 +95,7 @@ export default function Rotas() {
                 <MaterialCommunityIcons name="account-cog-outline" color={color} size={40} />
               ),
             }}
-          />
+          /> */}
         </Tab.Navigator>
       ) : (
         <AuthScreen />
