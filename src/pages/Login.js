@@ -49,12 +49,17 @@ export default function Login() {
   }
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.containerImage}>
+        <Image style={styles.Image}
+            source={require('../images/logo-athena.png')}
+        />
+      </View>
       <View style={styles.inputView}>
         <TextInput
           inputMode="email"
           style={styles.inputText}
           placeholder="Email do usuário"
-          placeholderTextColor="#fff"
+          placeholderTextColor="#161616"
           value={email}
           onChangeText={(digitado) => setEmail(digitado)}
         />
@@ -65,7 +70,7 @@ export default function Login() {
           secureTextEntry
           style={styles.inputText}
           placeholder="Senha"
-          placeholderTextColor="#fff"
+          placeholderTextColor="#161616"
           value={senha}
           onChangeText={(digitado) => setSenha(digitado)}
         />
@@ -104,8 +109,8 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   inputView: {
-    width: "85%",
-    backgroundColor: "#696969",
+    width: "95%",
+    backgroundColor: "#BCC7CF",
     borderRadius: 5,
     height: 60,
     marginBottom: 20,
@@ -114,11 +119,11 @@ const styles = StyleSheet.create({
   },
   inputText: {
     height: 65,
-    color: "#fff",
+    color: "#161616",
   },
   loginBtn: {
-    width: "85%",
-    backgroundColor: "#32CD32",
+    width: "95%",
+    backgroundColor: "#1E9CFA",
     borderRadius: 5,
     height: 50,
     alignItems: "center",
@@ -130,14 +135,14 @@ const styles = StyleSheet.create({
     color: "white",
   },
   forgotBtn: {
-    width: "80%",
+    width: "95%",
     alignItems: "flex-end",
     marginBottom: 30,
   },
   forgotText: {
     color: "#fff",
     fontSize: 15,
-    color: "#32CD32",
+    color: "#1E9CFA",
   },
   errorContainer: {
     marginTop: 10,
@@ -153,4 +158,11 @@ const styles = StyleSheet.create({
     width: "95%",
     height: "20%",
   },
+  containerImage: {
+    width: "85%",
+    display: "flex",
+    alignItems: "center",
+    marginBottom: 60
+  },
+
 });
