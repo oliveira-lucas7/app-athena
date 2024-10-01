@@ -26,7 +26,7 @@ export default function AuthScreen() {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#32CD32',
+    backgroundColor: '#1E9CFA',
     padding: 15,
   },
   buttonText: {
