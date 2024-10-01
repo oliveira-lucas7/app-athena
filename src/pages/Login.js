@@ -143,6 +143,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 15,
     color: "#1E9CFA",
+    textDecorationLine: "underline",
   },
   errorContainer: {
     marginTop: 10,
@@ -159,10 +160,15 @@ const styles = StyleSheet.create({
     height: "20%",
   },
   containerImage: {
-    width: "85%",
+    width: "65%",
+    height: "20%",
     display: "flex",
     alignItems: "center",
-    marginBottom: 60
   },
+  Image: {
+    resizeMode: "contain",
+    width: "100%",
+    height: "100%"
+  }
 
 });
