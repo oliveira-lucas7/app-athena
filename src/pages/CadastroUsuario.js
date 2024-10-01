@@ -7,17 +7,31 @@ import {
   ScrollView,
   Modal,
   TouchableWithoutFeedback,
-  Image,
 } from "react-native";
 import React, { useContext, useState, useEffect } from "react";
 import CustomAlert from "../components/CustomAlert";
 import { AuthContext } from "../context/AuthContext";
+import { Picker } from '@react-native-picker/picker';
+import { fetchSchools, fetchClasses } from "../data/index"; // Ajuste o caminho conforme necessário
 
 export default function CadastroUsuario() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [cpf, setCpf] = useState("");
+  const [address, setAddress] = useState({
+    street: "",
+    cep: "",
+    state: "",
+    city: "",
+  });
+  const [role, setRole] = useState("");
+  const [schoolId, setSchoolId] = useState("");
+  const [classId, setClassId] = useState("");
+  const [schools, setSchools] = useState([]);
+  const [classes, setClasses] = useState([]);
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [alertType, setAlertType] = useState("");
@@ -26,7 +40,9 @@ export default function CadastroUsuario() {
 
   useEffect(() => {
     resetError();
-  }, [])
+    loadSchools();
+    loadClasses();
+  }, []);
 
   useEffect(() => {
     if (error) {
@@ -43,13 +59,72 @@ export default function CadastroUsuario() {
     }
   }, [error, cadastro, successCadastro]);
 
-  function closeAlert() {
-    setAlertVisible(false);
-  }
 
-  function Cadastro() {
-    RealizaCadastro(email, username, password, phone);
-  }
+  const closeAlert = () => {
+    setAlertVisible(false);
+  };
+
+
+  const loadSchools = async () => {
+    try {
+      const data = await fetchSchools();
+
+      if (Array.isArray(data)) {
+        setSchools(data);
+      } else {
+        setSchools([]);
+        setAlertVisible(true);
+        setAlertMessage("Dados de escolas inválidos.");
+        setAlertType("error");
+      }
+    } catch (error) {
+      setAlertVisible(true);
+      setAlertMessage("Erro ao carregar escolas.");
+      setAlertType("error");
+    }
+  };
+
+  const loadClasses = async () => {
+    try {
+      const data = await fetchClasses(); // Carregue todas as classes
+
+      if (Array.isArray(data)) {
+        setClasses(data);
+      } else {
+        setClasses([]);
+        setAlertVisible(true);
+        setAlertMessage("Dados de classe inválidos.");
+        setAlertType("error");
+      }
+    } catch (error) {
+      setAlertVisible(true);
+      setAlertMessage("Erro ao carregar classes.");
+      setAlertType("error");
+    }
+  };
+
+  const handleCadastro = () => {
+    if (password !== confirmPassword) {
+      setAlertVisible(true);
+      setAlertMessage("As senhas não coincidem.");
+      setAlertType("error");
+      return;
+    }
+
+    const userData = {
+      name,
+      email,
+      phone,
+      password,
+      cpf,
+      address,
+      role,
+      IdSchool: schoolId,
+      IdClass: classId,
+    };    
+    RealizaCadastro(userData);
+  };
+
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -57,50 +132,146 @@ export default function CadastroUsuario() {
       <View style={styles.section}>
         <View style={styles.inputView}>
           <TextInput
-            inputMode="text"
             style={styles.inputText}
-            placeholder="Nome de usuário"
+            placeholder="Nome"
             placeholderTextColor="#fff"
-            value={username}
-            onChangeText={(digitado) => setUsername(digitado)}
+            value={name}
+            onChangeText={(text) => setName(text)}
           />
         </View>
         <View style={styles.inputView}>
           <TextInput
-            inputMode="email"
             style={styles.inputText}
             placeholder="Email"
             placeholderTextColor="#fff"
             value={email}
-            onChangeText={(digitado) => setEmail(digitado)}
+            onChangeText={(text) => setEmail(text)}
           />
         </View>
-
         <View style={styles.inputView}>
           <TextInput
-            inputMode="numeric"
             style={styles.inputText}
             placeholder="Telefone"
             placeholderTextColor="#fff"
             value={phone}
-            onChangeText={(digitado) => setPhone(digitado)}
+            onChangeText={(text) => setPhone(text)}
+          />
+        </View>
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.inputText}
+            placeholder="Senha"
+            secureTextEntry
+            placeholderTextColor="#fff"
+            value={password}
+            onChangeText={(text) => setPassword(text)}
+          />
+        </View>
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.inputText}
+            placeholder="Confirme a Senha"
+            secureTextEntry
+            placeholderTextColor="#fff"
+            value={confirmPassword}
+            onChangeText={(text) => setConfirmPassword(text)}
+          />
+        </View>
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.inputText}
+            placeholder="CPF"
+            placeholderTextColor="#fff"
+            value={cpf}
+            onChangeText={(text) => setCpf(text)}
           />
         </View>
 
         <View style={styles.inputView}>
           <TextInput
-            inputMode="text"
-            secureTextEntry
             style={styles.inputText}
-            placeholder="Senha"
+            placeholder="Rua"
             placeholderTextColor="#fff"
-            value={password}
-            onChangeText={(digitado) => setPassword(digitado)}
+            value={address.street}
+            onChangeText={(text) => setAddress({ ...address, street: text })}
           />
         </View>
-        <TouchableOpacity style={styles.loginBtn} onPress={Cadastro}>
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.inputText}
+            placeholder="CEP"
+            placeholderTextColor="#fff"
+            value={address.cep}
+            onChangeText={(text) => setAddress({ ...address, cep: text })}
+          />
+        </View>
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.inputText}
+            placeholder="Estado"
+            placeholderTextColor="#fff"
+            value={address.state}
+            onChangeText={(text) => setAddress({ ...address, state: text })}
+          />
+        </View>
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.inputText}
+            placeholder="Cidade"
+            placeholderTextColor="#fff"
+            value={address.city}
+            onChangeText={(text) => setAddress({ ...address, city: text })}
+          />
+        </View>
+
+        <View style={styles.inputView}>
+          <Picker
+            selectedValue={schoolId}
+            onValueChange={(itemValue) => setSchoolId(itemValue)}
+            style={styles.picker}
+          >
+            <Picker.Item label="Selecione a Escola" value="" />
+            {schools.map((school) => (
+              <Picker.Item key={school._id} label={school.name} value={school._id} />
+            ))}
+          </Picker>
+        </View>
+
+        <View style={styles.inputView}>
+          <Picker
+            selectedValue={classId}
+            onValueChange={(itemValue) => setClassId(itemValue)}
+            style={styles.picker}
+          >
+            <Picker.Item label="Selecione a Classe" value="" />
+            {classes.map((classItem) => (
+              <Picker.Item key={classItem._id} label={classItem.name} value={classItem._id} />
+            ))}
+          </Picker>
+        </View>
+
+        <View style={styles.inputView}>
+          <Picker
+            selectedValue={role}
+            onValueChange={(itemValue) => setRole(itemValue)}
+            style={styles.picker}
+          >
+            <Picker.Item label="Selecione o Cargo" value="" />
+            <Picker.Item label="Diretor" value="diretor" />
+            <Picker.Item label="Professor" value="professor" />
+            <Picker.Item label="Estudante" value="estudante" />
+            <Picker.Item label="Coordenador" value="coordenador" />
+            <Picker.Item label="Inspetor" value="inspetor" />
+            <Picker.Item label="Limpeza" value="limpeza" />
+            <Picker.Item label="Cozinha" value="cozinha" />
+            <Picker.Item label="Outro" value="outro" />
+          </Picker>
+        </View>
+
+        <TouchableOpacity style={styles.loginBtn} onPress={handleCadastro}>
           <Text style={styles.loginText}>CADASTRAR</Text>
         </TouchableOpacity>
+
         <Modal
           visible={alertVisible}
           transparent
@@ -147,6 +318,11 @@ const styles = StyleSheet.create({
     height: 65,
     color: "#fff",
   },
+  picker: {
+    height: 50,
+    width: "100%",
+    color: "#fff",
+  },
   loginBtn: {
     width: "85%",
     backgroundColor: "#32CD32",
@@ -163,11 +339,6 @@ const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  img: {
-    width: "95%",
-    height: "20%",
-    marginTop: 25,
   },
   title: {
     margin: 10,

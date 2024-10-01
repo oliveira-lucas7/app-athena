@@ -13,34 +13,43 @@ function AuthProvider({ children }) {
 
   const [showCadastro, setShowCadastro] = useState(false); 
   
-  async function RealizaCadastro(email, username, password, phone) {
-    await fetch("http://192.168.56.1:8080/user/create", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        usuarioEmail: email,
-        usuarioNome: username,
-        usuarioSenha: password,
-        usuarioTelefone: phone,
-      }),
-    })
-      .then((res) => {
-        if (res.status == 200) {
-          setError(false);
-          setSuccessCadastro(true);
+  async function RealizaCadastro(userData) {
+    console.log(userData)
+      await fetch("http://192.168.56.1:8080/user/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      })
+      .then((res) => res.json())
+      .then( async (json) => {
+        if (json.token) {
+          try {
+            await AsyncStorage.setItem(
+              "userId",
+              json.token.toString()
+            );
+          } catch (err) {
+            setError(true);
+          }
+          setError(false)
+          setSuccessLogin(true);
           setTimeout(() => {
-            setSuccessCadastro(false);
-            setShowCadastro(false);
+            setLogado(true);
+            setRealizouLogout(false);
+            setSuccessLogin(false);
           }, 2000);
         } else {
           setError(true);
         }
-      })
-      .catch((err) => setError(true));
+      } ) 
+      .catch((err) => {setError(true)
+        console.log(err)
+      });
+    
   }
-
+  
   async function Login(email, senha) {
 
     console.log(email, senha)
