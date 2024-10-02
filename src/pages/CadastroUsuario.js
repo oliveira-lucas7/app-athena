@@ -12,7 +12,7 @@ import React, { useContext, useState, useEffect } from "react";
 import CustomAlert from "../components/CustomAlert";
 import { AuthContext } from "../context/AuthContext";
 import { Picker } from '@react-native-picker/picker';
-import { fetchSchools, fetchClasses } from "../data/index"; // Ajuste o caminho conforme necessário
+import { fetchSchools, fetchClasses } from "../data/index"; 
 
 export default function CadastroUsuario() {
   const [name, setName] = useState("");
@@ -207,25 +207,22 @@ export default function CadastroUsuario() {
             onChangeText={(text) => setAddress({ ...address, cep: text })}
           />
         </View>
-        <View style={styles.inputView}>
+        <View style={styles.inputViewDois}>
           <TextInput
-            style={styles.inputText}
+            style={styles.inputTextDoisCidade} 
+            placeholder="Cidade"
+            placeholderTextColor="#161616"
+            value={address.city}
+            onChangeText={(text) => setAddress({ ...address, city: text })}
+          />
+          <TextInput
+            style={styles.inputTextDoisEstado}
             placeholder="Estado"
             placeholderTextColor="#161616"
             value={address.state}
             onChangeText={(text) => setAddress({ ...address, state: text })}
           />
         </View>
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.inputText}
-            placeholder="Cidade"
-            placeholderTextColor="#161616"
-            value={address.city}
-            onChangeText={(text) => setAddress({ ...address, city: text })}
-          />
-        </View>
-
         <View style={styles.inputView}>
           <Picker
             selectedValue={schoolId}
@@ -347,5 +344,28 @@ const styles = StyleSheet.create({
     fontSize: 40,
     fontWeight: "500",
     color: "white"
-  }
+  },
+  inputViewDois: {
+    width: "95%", 
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 20,
+  },
+  inputTextDoisCidade: {
+    width: "75%",
+    backgroundColor: "#BCC7CF",
+    borderRadius: 5,
+    height: 60,
+    padding: 20,
+    color: "#161616",
+  },
+  inputTextDoisEstado: {
+    width: "23%", 
+    backgroundColor: "#BCC7CF",
+    borderRadius: 5,
+    height: 60,
+    padding: 20,
+    color: "#161616",
+  },
 });
+
