@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { RadioButton } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { format, parse } from 'date-fns';
 
 const subjectOptions = [
   { value: 'Língua Portuguesa', label: 'Língua Portuguesa' },
@@ -67,59 +69,94 @@ const CadastroTarefas = () => {
   };
 
   useEffect(() => {
-    const token = 'your_token_here';
-    fetch("http://192.168.56.1:8080/user", {
-      method: "GET",
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-    })
-      .then((resposta) => resposta.json())
-      .then((json) => {
+    const fetchProfessorData = async () => {
+      try {
+        const token = await AsyncStorage.getItem('userId');
+        if (!token) {
+          console.error('Token não encontrado');
+          return;
+        }
+
+        const response = await fetch("http://192.168.56.1:/user", {
+          method: "GET",
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+        });
+
+        const json = await response.json();
         setIdProfessor(json.message._id);
         setSchoolProfessor(json.message.Idschool);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Erro ao buscar professor:", error);
-      });
+      }
+    };
+
+    fetchProfessorData();
   }, []);
 
-  const CadastrarTarefa = () => {
-    const token = 'your_token_here';
-    fetch("http://192.168.56.1:8080/tasks/create", {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        subject: selectedSubject,
-        content: content,
-        dueDate: selectedDate,
-        recipients: selectedRecipients,
-        attachment: 20,
-        professorId: IdProfessor,
-        status: "em andamento",
-        class: '66fc22f1c3fbe6f5be1b366f',
-        school: '66fbfd0f80c681d1d2970824',
-        alternatives: tipoQuestao === 'alternativa' ? alternativas : [],
-      })
-    })
-      .then((resposta) => resposta.json())
-      .then((json) => {
-        console.log("Tarefa cadastrada com sucesso:", json);
-      })
-      .catch((error) => {
-        console.error("Erro ao cadastrar tarefa:", error);
+  const CadastrarTarefa = async () => {
+    try {
+      const token = await AsyncStorage.getItem('userId');
+      if (!token) {
+        console.error('Token não encontrado');
+        return;
+      }
+  
+      console.log("selectedSubject:", selectedSubject);
+      console.log("content:", content);
+      console.log("dueDate:", selectedDate);
+      console.log("tipoQuestao:", tipoQuestao);
+      console.log("selectedRecipients:", selectedRecipients);
+      console.log("alternativas:", alternativas);
+  
+      // Validação de campos obrigatórios
+      if (!selectedSubject || !content || !selectedDate || !tipoQuestao) {
+        console.error('Por favor, preencha todos os campos obrigatórios.');
+        return;
+      }
+  
+      if (tipoQuestao === 'alternativa' && !alternativas.some(alt => alt.isCorrect)) {
+        console.error('Pelo menos uma alternativa deve ser marcada como correta.');
+        return;
+      }
+  
+      // Convertendo a data para o formato ISO
+      const parsedDate = parse(selectedDate, 'dd/MM/yyyy', new Date());
+      const formattedDate = format(parsedDate, 'yyyy-MM-dd');
+  
+      const response = await fetch("http://192.168.56.1:3030/tasks/create", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          subject: selectedSubject,
+          content: content,
+          dueDate: formattedDate, // Usando a data formatada
+          recipients: selectedRecipients,
+          attachment: 20,
+          professorId: IdProfessor,
+          status: "em andamento",
+          class: '66fc22f1c3fbe6f5be1b366f',
+          school: '66fbfd0f80c681d1d2970824',
+          alternatives: tipoQuestao === 'alternativa' ? alternativas : [],
+        })
       });
+  
+      const json = await response.json();
+      console.log("Tarefa cadastrada com sucesso:", json);
+    } catch (error) {
+      console.error("Erro ao cadastrar tarefa:", error);
+    }
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Cadastre uma Tarefa</Text>
 
-      {/* Picker para seleção de assunto */}
       <Text style={styles.label}>Selecione a Disciplina:</Text>
       <Picker
         selectedValue={selectedSubject}
@@ -165,7 +202,7 @@ const CadastroTarefas = () => {
           {alternativas.map((alternativa, index) => (
             <View key={index} style={styles.alternativaContainer}>
               <TextInput
-                style={styles.input}
+                style={styles.inputAlternativa}
                 placeholder={`Alternativa ${index + 1}`}
                 value={alternativa.text}
                 onChangeText={(value) => handleAlternativaChange(index, value)}
@@ -182,7 +219,6 @@ const CadastroTarefas = () => {
         </View>
       )}
 
-      {/* Picker para seleção de destinatários */}
       <Text style={styles.label}>Selecione o Destinatário:</Text>
       <Picker
         selectedValue={selectedRecipients.length > 0 ? selectedRecipients[selectedRecipients.length - 1].value : ''}
@@ -227,8 +263,18 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: '#fff',
   },
+  inputAlternativa: {
+    borderBottomWidth: 1,
+    borderColor: '#1E9CFA', // Azul
+    marginBottom: 20,
+    padding: 12,
+    borderRadius: 5,
+    backgroundColor: '#fff',
+    width: "80%"
+  },
   radioContainer: {
     flexDirection: 'row',
+    alignItems: "center",
     justifyContent: 'center', // Centraliza horizontalmente
     marginBottom: 20,
   },
