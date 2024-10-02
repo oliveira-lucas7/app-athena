@@ -12,7 +12,7 @@ import React, { useContext, useState, useEffect } from "react";
 import CustomAlert from "../components/CustomAlert";
 import { AuthContext } from "../context/AuthContext";
 import { Picker } from '@react-native-picker/picker';
-import { fetchSchools, fetchClasses } from "../data/index"; // Ajuste o caminho conforme necessário
+import { fetchSchools, fetchClasses } from "../data/index"; 
 
 export default function CadastroUsuario() {
   const [name, setName] = useState("");
@@ -134,7 +134,7 @@ export default function CadastroUsuario() {
           <TextInput
             style={styles.inputText}
             placeholder="Nome"
-            placeholderTextColor="#fff"
+            placeholderTextColor="#161616"
             value={name}
             onChangeText={(text) => setName(text)}
           />
@@ -143,7 +143,7 @@ export default function CadastroUsuario() {
           <TextInput
             style={styles.inputText}
             placeholder="Email"
-            placeholderTextColor="#fff"
+            placeholderTextColor="#161616"
             value={email}
             onChangeText={(text) => setEmail(text)}
           />
@@ -152,7 +152,7 @@ export default function CadastroUsuario() {
           <TextInput
             style={styles.inputText}
             placeholder="Telefone"
-            placeholderTextColor="#fff"
+            placeholderTextColor="#161616"
             value={phone}
             onChangeText={(text) => setPhone(text)}
           />
@@ -162,7 +162,7 @@ export default function CadastroUsuario() {
             style={styles.inputText}
             placeholder="Senha"
             secureTextEntry
-            placeholderTextColor="#fff"
+            placeholderTextColor="#161616"
             value={password}
             onChangeText={(text) => setPassword(text)}
           />
@@ -172,7 +172,7 @@ export default function CadastroUsuario() {
             style={styles.inputText}
             placeholder="Confirme a Senha"
             secureTextEntry
-            placeholderTextColor="#fff"
+            placeholderTextColor="#161616"
             value={confirmPassword}
             onChangeText={(text) => setConfirmPassword(text)}
           />
@@ -181,7 +181,8 @@ export default function CadastroUsuario() {
           <TextInput
             style={styles.inputText}
             placeholder="CPF"
-            placeholderTextColor="#fff"
+            placeholderTextColor="#161616"
+            keyboardType="numeric"
             value={cpf}
             onChangeText={(text) => setCpf(text)}
           />
@@ -191,7 +192,7 @@ export default function CadastroUsuario() {
           <TextInput
             style={styles.inputText}
             placeholder="Rua"
-            placeholderTextColor="#fff"
+            placeholderTextColor="#161616"
             value={address.street}
             onChangeText={(text) => setAddress({ ...address, street: text })}
           />
@@ -200,30 +201,28 @@ export default function CadastroUsuario() {
           <TextInput
             style={styles.inputText}
             placeholder="CEP"
-            placeholderTextColor="#fff"
+            keyboardType="numeric"
+            placeholderTextColor="#161616"
             value={address.cep}
             onChangeText={(text) => setAddress({ ...address, cep: text })}
           />
         </View>
-        <View style={styles.inputView}>
+        <View style={styles.inputViewDois}>
           <TextInput
-            style={styles.inputText}
+            style={styles.inputTextDoisCidade} 
+            placeholder="Cidade"
+            placeholderTextColor="#161616"
+            value={address.city}
+            onChangeText={(text) => setAddress({ ...address, city: text })}
+          />
+          <TextInput
+            style={styles.inputTextDoisEstado}
             placeholder="Estado"
-            placeholderTextColor="#fff"
+            placeholderTextColor="#161616"
             value={address.state}
             onChangeText={(text) => setAddress({ ...address, state: text })}
           />
         </View>
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.inputText}
-            placeholder="Cidade"
-            placeholderTextColor="#fff"
-            value={address.city}
-            onChangeText={(text) => setAddress({ ...address, city: text })}
-          />
-        </View>
-
         <View style={styles.inputView}>
           <Picker
             selectedValue={schoolId}
@@ -306,8 +305,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   inputView: {
-    width: "85%",
-    backgroundColor: "#696969",
+    width: "95%",
+    backgroundColor: "#BCC7CF",
     borderRadius: 5,
     height: 60,
     marginBottom: 20,
@@ -316,16 +315,16 @@ const styles = StyleSheet.create({
   },
   inputText: {
     height: 65,
-    color: "#fff",
+    color: "#161616",
   },
   picker: {
     height: 50,
     width: "100%",
-    color: "#fff",
+    color: "#161616",
   },
   loginBtn: {
-    width: "85%",
-    backgroundColor: "#32CD32",
+    width: "95%",
+    backgroundColor: "#1E9CFA",
     borderRadius: 5,
     height: 50,
     alignItems: "center",
@@ -341,9 +340,32 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   title: {
-    margin: 10,
+    marginBottom: 40,
     fontSize: 40,
     fontWeight: "500",
     color: "white"
-  }
+  },
+  inputViewDois: {
+    width: "95%", 
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 20,
+  },
+  inputTextDoisCidade: {
+    width: "75%",
+    backgroundColor: "#BCC7CF",
+    borderRadius: 5,
+    height: 60,
+    padding: 20,
+    color: "#161616",
+  },
+  inputTextDoisEstado: {
+    width: "23%", 
+    backgroundColor: "#BCC7CF",
+    borderRadius: 5,
+    height: 60,
+    padding: 20,
+    color: "#161616",
+  },
 });
+
