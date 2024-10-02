@@ -1,4 +1,4 @@
-const API_URL = 'http://192.168.56.1:8080'; // Altere conforme necessário
+const API_URL = 'http://192.168.56.1:3030'; // Altere conforme necessário
 
 export const fetchSchools = async () => {
     try {
@@ -8,11 +8,11 @@ export const fetchSchools = async () => {
             "Content-Type": "application/json",
           },
         });
-    
+      
         if (!response.ok) {
           throw new Error('Failed to fetch schools');
         }
-    
+
         const json = await response.json();
         console.log(json); // Para verificar o que está sendo retornado
         return json.schools; // Retorna os dados obtidos
