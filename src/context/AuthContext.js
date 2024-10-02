@@ -15,7 +15,7 @@ function AuthProvider({ children }) {
   
   async function RealizaCadastro(userData) {
     console.log(userData)
-      await fetch("http://192.168.56.1:8080/user/create", {
+      await fetch("http://192.168.56.1:3030/user/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -53,7 +53,7 @@ function AuthProvider({ children }) {
   async function Login(email, senha) {
 
     console.log(email, senha)
-    await fetch("http://192.168.56.1:8080/user/login", {
+    await fetch("http://192.168.56.1:3030/user/login", {
       method: "POST",
       headers: {
         "content-type": "application/json",

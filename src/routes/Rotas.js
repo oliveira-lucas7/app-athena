@@ -9,6 +9,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const Tab = createBottomTabNavigator();
 
 import Home from "../pages/Home";
+import CadastroTarefas from "../pages/CadastroTarefa";
 import AuthScreen from "../pages/AuthScreen";
 
 export default function Rotas() {
@@ -62,9 +63,9 @@ export default function Rotas() {
               ),
             }}
           />
-          {/* <Tab.Screen
-            name="Cadastrar objeto desaparecido"
-            component={CadastroObjeto}
+           <Tab.Screen
+            name="Cadastrar Tarefa"
+            component={CadastroTarefas}
             options={{
               tabBarLabel: "Obs",
               tabBarIcon: ({ color, size }) => (
@@ -76,6 +77,7 @@ export default function Rotas() {
               ),
             }}
           />
+                    {/*
           <Tab.Screen
             name="Buscar pessoa"
             component={Busca}
